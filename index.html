@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ALIP ENCRYPTOR</title>
+<meta name="description" content="Enkripsi, dekripsi, dan obfuscate file langsung di browser kamu — tanpa upload ke server.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app">
+  <!-- ========== SIDEBAR ========== -->
+  <div class="rail-scrim" id="rail-scrim"></div>
+  <aside class="rail" id="rail">
+    <div class="rail-brand">
+      <div class="rail-mark">AE</div>
+      <div class="rail-brand-text"><b>ALIP ENCRYPTOR</b><span>local-first crypto toolkit</span></div>
+    </div>
+    <nav class="rail-nav">
+      <div class="rail-group-label">MENU</div>
+      <div class="rail-link" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1v-9"/></svg>Home</div>
+      <div class="rail-link" data-view="encrypt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Encrypt File</div>
+      <div class="rail-link" data-view="decrypt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.8"/></svg>Decrypt File</div>
+      <div class="rail-link" data-view="obfuscator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 5 3 12l5 7M16 5l5 7-5 7M13 4l-2 16"/></svg>Code Obfuscator</div>
+      <div class="rail-link" data-view="batch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="7" height="7" rx="1"/><rect x="14" y="4" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Batch Processor</div>
+      <div class="rail-link" data-view="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>History</div>
+      <div class="rail-group-label">INFO</div>
+      <div class="rail-link" data-view="docs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6"/></svg>Documentation</div>
+      <div class="rail-link" data-view="faq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.8-2.3 2-2.3 3.8M12 17h.01"/></svg>FAQ &amp; Security</div>
+      <div class="rail-link" data-view="about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>About</div>
+    </nav>
+    <div class="rail-foot">AES-256-GCM · runs locally<br>v1.0.0</div>
+  </aside>
+
+  <!-- ========== MAIN ========== -->
+  <div class="main">
+    <header class="topbar">
+      <button class="menu-btn" id="menu-btn" aria-label="Open menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div>
+        <div class="topbar-title" id="topbar-title">Home</div>
+        <div class="topbar-sub" id="topbar-sub">Overview &amp; quick actions</div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="pill"><span class="pill-dot"></span>Local processing — no server upload</div>
+    </header>
+
+    <!-- ===================== HOME ===================== -->
+    <section class="view" id="view-home">
+      <div class="view-head">
+        <h1>ALIP ENCRYPTOR</h1>
+        <p>Enkripsi file, dekripsi kembali, dan obfuscate source code — semuanya diproses langsung di browser kamu memakai Web Crypto API bawaan. File tidak pernah dikirim ke server mana pun.</p>
+      </div>
+
+      <div class="grid3">
+        <div class="stat-card"><div class="num" id="stat-processed">0</div><div class="lbl">Files processed this session</div></div>
+        <div class="stat-card"><div class="num" id="stat-success">0</div><div class="lbl">Successful</div></div>
+        <div class="stat-card"><div class="num" id="stat-failed">0</div><div class="lbl">Failed</div></div>
+      </div>
+      <div class="spacer-24"></div>
+      <div class="stat-card" style="max-width:280px"><div class="num" id="stat-bytes">0 B</div><div class="lbl">Total data processed</div></div>
+
+      <h2 class="section-h">Quick actions</h2>
+      <div class="grid3">
+        <div class="feature-card" data-view="encrypt">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <h3>Encrypt a file</h3>
+          <p>AES-256-GCM with a password-derived key. Works with any file type.</p>
+        </div>
+        <div class="feature-card" data-view="decrypt">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.8"/></svg></div>
+          <h3>Decrypt a .alipenc file</h3>
+          <p>Restore the original file and verify its integrity automatically.</p>
+        </div>
+        <div class="feature-card" data-view="obfuscator">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 5 3 12l5 7M16 5l5 7-5 7M13 4l-2 16"/></svg></div>
+          <h3>Obfuscate source code</h3>
+          <p>Real obfuscation for JavaScript; honest minification for HTML/CSS/JSON.</p>
+        </div>
+      </div>
+
+      <h2 class="section-h">How it works</h2>
+      <div class="panel">
+        <p class="small muted" style="line-height:1.7; margin:0">
+          1. Pick a file and a password.<br>
+          2. ALIP ENCRYPTOR derives a 256-bit key from your password with PBKDF2-SHA256 (250,000 iterations) and a random salt.<br>
+          3. The file is encrypted with AES-256-GCM, which also authenticates the data — so decryption with the wrong password fails loudly instead of returning garbage.<br>
+          4. Your password is never stored, logged, or transmitted anywhere. If you lose it, the file cannot be recovered — there is no backdoor.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== ENCRYPT ===================== -->
+    <section class="view" id="view-encrypt">
+      <div class="view-head">
+        <h1>Encrypt File</h1>
+        <p>Select one or more files, set a password, and encrypt locally. Output files use the <span class="mono">.alipenc</span> extension.</p>
+      </div>
+
+      <div class="panel">
+        <div class="dropzone" id="enc-dropzone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          <div class="dz-title">Tap to choose files</div>
+          <div class="dz-sub">or drag &amp; drop — any file type, any size your device can handle</div>
+        </div>
+        <input type="file" id="enc-fileinput" multiple hidden>
+        <div class="file-list" id="enc-filelist"></div>
+        <div class="btn-row">
+          <button class="btn btn-ghost btn-sm" id="enc-clear">Clear All</button>
+        </div>
+
+        <h2 class="section-h">Password</h2>
+        <div class="field-row">
+          <div class="field">
+            <label for="enc-password">Password</label>
+            <div class="pw-wrap">
+              <input type="password" id="enc-password" placeholder="Enter a strong password">
+              <button class="pw-toggle" id="enc-pw-toggle" type="button">Show</button>
+            </div>
+            <div class="strength" id="enc-strength"><i></i></div>
+            <div class="hint">Minimum 6 characters. Longer + mixed case + symbols = stronger.</div>
+          </div>
+          <div class="field">
+            <label for="enc-password2">Confirm password</label>
+            <div class="pw-wrap">
+              <input type="password" id="enc-password2" placeholder="Re-enter password">
+              <button class="pw-toggle" id="enc-pw2-toggle" type="button">Show</button>
+            </div>
+            <div class="hint">If you lose this password, the file cannot be recovered.</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="enc-start" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            START ENCRYPT
+          </button>
+          <button class="btn btn-outline" id="enc-download-all" disabled>Download All (ZIP)</button>
+          <button class="btn btn-ghost" id="enc-reset">Reset</button>
+        </div>
+
+        <div class="progress-wrap" id="enc-progress-wrap" style="display:none">
+          <div class="progress-top"><span id="enc-progress-label">Waiting…</span><span id="enc-progress-pct">0%</span></div>
+          <div class="progress-bar"><i></i></div>
+        </div>
+        <div id="enc-alert"></div>
+      </div>
+    </section>
+
+    <!-- ===================== DECRYPT ===================== -->
+    <section class="view" id="view-decrypt">
+      <div class="view-head">
+        <h1>Decrypt File</h1>
+        <p>Select one or more <span class="mono">.alipenc</span> files and enter the password used to encrypt them.</p>
+      </div>
+
+      <div class="panel">
+        <div class="dropzone" id="dec-dropzone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          <div class="dz-title">Tap to choose .alipenc files</div>
+          <div class="dz-sub">or drag &amp; drop</div>
+        </div>
+        <input type="file" id="dec-fileinput" multiple accept=".alipenc" hidden>
+        <div class="file-list" id="dec-filelist"></div>
+        <div class="btn-row">
+          <button class="btn btn-ghost btn-sm" id="dec-clear">Clear All</button>
+        </div>
+
+        <h2 class="section-h">Password</h2>
+        <div class="field">
+          <label for="dec-password">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="dec-password" placeholder="Enter the encryption password">
+            <button class="pw-toggle" id="dec-pw-toggle" type="button">Show</button>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="dec-start" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.6-1.8"/></svg>
+            START DECRYPT
+          </button>
+          <button class="btn btn-outline" id="dec-download-all" disabled>Download All (ZIP)</button>
+          <button class="btn btn-ghost" id="dec-reset">Reset</button>
+        </div>
+
+        <div class="progress-wrap" id="dec-progress-wrap" style="display:none">
+          <div class="progress-top"><span id="dec-progress-label">Waiting…</span><span id="dec-progress-pct">0%</span></div>
+          <div class="progress-bar"><i></i></div>
+        </div>
+        <div id="dec-alert"></div>
+      </div>
+    </section>
+
+    <!-- ===================== OBFUSCATOR ===================== -->
+    <section class="view" id="view-obfuscator">
+      <div class="view-head">
+        <h1>Code Obfuscator</h1>
+        <p>JavaScript gets real obfuscation (identifier renaming, string encoding, control-flow transforms). HTML/CSS/JSON get genuine minification. Other languages are marked unsupported rather than faked.</p>
+      </div>
+
+      <div class="panel">
+        <div class="dropzone" id="obf-dropzone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          <div class="dz-title">Tap to upload a code file</div>
+          <div class="dz-sub">or paste code directly into the editor below — <span id="obf-filename" class="mono">untitled.js</span></div>
+        </div>
+        <input type="file" id="obf-fileinput" hidden accept=".js,.mjs,.cjs,.json,.html,.htm,.css,.py,.php,.java,.c,.cpp,.cc,.h,.hpp">
+
+        <h2 class="section-h">Language &amp; level</h2>
+        <div class="field">
+          <label>Language</label>
+          <div class="chip-row">
+            <div class="chip active" data-obf-lang="auto">Auto-detect</div>
+            <div class="chip" data-obf-lang="javascript">JavaScript</div>
+            <div class="chip" data-obf-lang="html">HTML</div>
+            <div class="chip" data-obf-lang="css">CSS</div>
+            <div class="chip" data-obf-lang="json">JSON</div>
+            <div class="chip" data-obf-lang="python">Python</div>
+            <div class="chip" data-obf-lang="php">PHP</div>
+            <div class="chip" data-obf-lang="java">Java</div>
+            <div class="chip" data-obf-lang="c">C</div>
+            <div class="chip" data-obf-lang="cpp">C++</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Obfuscation level (JavaScript only)</label>
+          <div class="chip-row">
+            <div class="chip" data-obf-level="ringan">Ringan</div>
+            <div class="chip active" data-obf-level="sedang">Sedang</div>
+            <div class="chip" data-obf-level="tinggi">Tinggi</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="obf-start">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5 3 12l5 7M16 5l5 7-5 7M13 4l-2 16"/></svg>
+            START OBFUSCATOR
+          </button>
+          <button class="btn btn-outline" id="obf-copy" disabled>Copy Code</button>
+          <button class="btn btn-outline" id="obf-download" disabled>Download Obfuscated File</button>
+          <button class="btn btn-ghost" id="obf-reset">Reset</button>
+        </div>
+        <div id="obf-alert"></div>
+
+        <h2 class="section-h">Editor</h2>
+        <div class="code-grid">
+          <div class="code-box">
+            <div class="code-box-head"><span>SOURCE</span></div>
+            <textarea class="code" id="obf-input" spellcheck="false" placeholder="// paste your code here"></textarea>
+          </div>
+          <div class="code-box">
+            <div class="code-box-head"><span>OUTPUT</span></div>
+            <textarea class="code" id="obf-output" spellcheck="false" readonly placeholder="// result appears here"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== BATCH ===================== -->
+    <section class="view" id="view-batch">
+      <div class="view-head">
+        <h1>Batch Processor</h1>
+        <p>Run one operation across many files at once, then download everything as a single ZIP.</p>
+      </div>
+
+      <div class="panel">
+        <div class="field">
+          <label>Operation</label>
+          <div class="chip-row">
+            <div class="chip active" data-batch-op="encrypt">Encrypt</div>
+            <div class="chip" data-batch-op="decrypt">Decrypt</div>
+            <div class="chip" data-batch-op="obfuscate">Obfuscate</div>
+          </div>
+        </div>
+
+        <div class="dropzone" id="batch-dropzone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          <div class="dz-title">Tap to choose files</div>
+          <div class="dz-sub">or drag &amp; drop multiple files</div>
+        </div>
+        <input type="file" id="batch-fileinput" multiple hidden>
+        <div class="file-list" id="batch-filelist"></div>
+        <div class="btn-row">
+          <button class="btn btn-ghost btn-sm" id="batch-clear">Clear All</button>
+        </div>
+
+        <div class="field" id="batch-pw-field">
+          <label for="batch-password">Password (required for encrypt / decrypt)</label>
+          <input type="password" id="batch-password" placeholder="Password">
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="batch-start">Run Batch</button>
+          <button class="btn btn-outline" id="batch-download-all" disabled>Download All (ZIP)</button>
+        </div>
+
+        <div class="progress-wrap" id="batch-progress-wrap" style="display:none">
+          <div class="progress-top"><span>Overall progress</span><span id="batch-progress-pct">0%</span></div>
+          <div class="progress-bar"><i></i></div>
+        </div>
+        <div id="batch-report"></div>
+      </div>
+    </section>
+
+    <!-- ===================== HISTORY ===================== -->
+    <section class="view" id="view-history">
+      <div class="view-head">
+        <h1>History</h1>
+        <p>Off by default. If enabled, a local log (filename, operation, time, status, size) is kept only on this device — never passwords, never file content.</p>
+      </div>
+      <div class="panel">
+        <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+          <input type="checkbox" id="history-toggle" style="width:16px;height:16px;">
+          Enable local history logging
+        </label>
+        <div class="btn-row">
+          <button class="btn btn-danger btn-sm" id="history-clear">Clear History</button>
+        </div>
+        <div style="overflow-x:auto; margin-top:16px;">
+          <table class="hist">
+            <thead><tr><th>File</th><th>Operation</th><th>When</th><th>Status</th><th>Size</th></tr></thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DOCS ===================== -->
+    <section class="view" id="view-docs">
+      <div class="view-head">
+        <h1>Documentation</h1>
+        <p>Install, run locally, and deploy ALIP ENCRYPTOR.</p>
+      </div>
+
+      <h2 class="section-h">Project structure</h2>
+      <div class="panel"><pre class="mono small" style="white-space:pre-wrap; margin:0; line-height:1.7;">alip-encryptor/
+├── index.html
+├── css/style.css
+├── js/
+│   ├── app.js          (navigation, UI wiring, stats, history)
+│   ├── crypto.js        (AES-256-GCM encrypt/decrypt engine)
+│   └── obfuscator.js    (JS obfuscation + HTML/CSS/JSON minify)
+├── package.json
+└── README.md</pre></div>
+
+      <h2 class="section-h">Run locally — HP Android (Termux)</h2>
+      <div class="panel">
+        <pre class="mono small" style="white-space:pre-wrap; margin:0; line-height:1.8;">pkg update && pkg upgrade
+pkg install nodejs git
+git clone &lt;repo-url&gt; alip-encryptor
+cd alip-encryptor
+npm install
+npx http-server . -p 8080
+# then open http://localhost:8080 in Chrome Android</pre>
+      </div>
+
+      <h2 class="section-h">Run locally — desktop</h2>
+      <div class="panel">
+        <pre class="mono small" style="white-space:pre-wrap; margin:0; line-height:1.8;">cd alip-encryptor
+npm install
+npx http-server . -p 8080
+# open http://localhost:8080
+
+# or, with zero dependencies, just open index.html directly in a browser —
+# everything here runs client-side, no build step required.</pre>
+      </div>
+
+      <h2 class="section-h">Deploy to hosting</h2>
+      <div class="panel">
+        <p class="small" style="line-height:1.7">
+        This is a 100% static site (HTML/CSS/JS) — it deploys anywhere that serves static files:
+        </p>
+        <ul class="small" style="line-height:1.9; color:var(--text-mid)">
+          <li><b>Netlify / Vercel / Cloudflare Pages:</b> connect the repo, no build command needed, publish directory = project root.</li>
+          <li><b>GitHub Pages:</b> push to a repo, enable Pages on the main branch.</li>
+          <li><b>Any VPS/Nginx/Apache:</b> copy the folder into the web root and serve over HTTPS.</li>
+        </ul>
+        <p class="small" style="line-height:1.7">Always serve over HTTPS in production — the Web Crypto API requires a secure context (HTTPS or localhost) to work at all.</p>
+      </div>
+
+      <h2 class="section-h">Testing checklist</h2>
+      <div class="panel">
+        <p class="small" style="line-height:1.8; color:var(--text-mid); margin:0">
+        Encrypt: TXT, PDF, PNG, ZIP, JS, and binary files · correct and incorrect passwords · empty file · corrupted .alipenc.<br>
+        Decrypt: round-trip against every file above · compare SHA-256 of original vs. decrypted output.<br>
+        Obfuscator: JS obfuscation correctness (run the output) · HTML/CSS/JSON minification · unsupported-language messaging.<br>
+        Download: single file, ZIP of many files, on Chrome Android and desktop browsers.<br>
+        UI: all buttons, progress bars, cancel/reset, error states, small-screen layout.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== FAQ ===================== -->
+    <section class="view" id="view-faq">
+      <div class="view-head">
+        <h1>FAQ &amp; Security</h1>
+        <p>How ALIP ENCRYPTOR actually protects your data — and what it can't do.</p>
+      </div>
+      <div class="panel">
+        <details class="faq" open>
+          <summary>Does my file ever leave my device?</summary>
+          <p>No. Encryption, decryption, and obfuscation all run inside your browser with the Web Crypto API and local JavaScript. Nothing is uploaded to a server.</p>
+        </details>
+        <details class="faq">
+          <summary>What encryption does it use?</summary>
+          <p>AES-256-GCM (authenticated encryption) with a key derived from your password via PBKDF2-SHA256 at 250,000 iterations, using a random 16-byte salt and 12-byte nonce per file.</p>
+        </details>
+        <details class="faq">
+          <summary>What happens if I forget my password?</summary>
+          <p>The file cannot be recovered. There is no backdoor, no master key, and no "forgot password" option — that's what makes the encryption real.</p>
+        </details>
+        <details class="faq">
+          <summary>Is code obfuscation the same as encryption?</summary>
+          <p>No. Obfuscation makes code harder to read; it does not make it secret. Anyone with the obfuscated file can still technically run or deobfuscate it with effort. Treat it as a deterrent, not a vault.</p>
+        </details>
+        <details class="faq">
+          <summary>Why can't it obfuscate Python/PHP/Java/C/C++?</summary>
+          <p>Honest answer: those need a real per-language parser or compiler toolchain, which isn't something a browser-only build can do correctly without faking the output. ALIP ENCRYPTOR says so instead of shipping broken code.</p>
+        </details>
+        <details class="faq">
+          <summary>Is history stored anywhere?</summary>
+          <p>Only if you turn it on, and only on your device via localStorage. It logs filenames, operation type, timestamps, and status — never passwords or file contents.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section class="view" id="view-about">
+      <div class="view-head">
+        <h1>About</h1>
+      </div>
+      <div class="panel">
+        <p class="small" style="line-height:1.8; color:var(--text-mid)">
+        ALIP ENCRYPTOR is a local-first toolkit for encrypting files, decrypting them back, and obfuscating source code — built to run entirely in the browser, with Android/Chrome Android as a first-class target alongside desktop. Version 1.0.0.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<!-- Crypto / obfuscation engines -->
+<script src="https://cdn.jsdelivr.net/npm/javascript-obfuscator@4.1.1/dist/index.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<script src="js/crypto.js"></script>
+<script src="js/obfuscator.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

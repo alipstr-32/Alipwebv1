@@ -1,0 +1,14 @@
+{
+  "name": "alip-encryptor",
+  "version": "1.0.0",
+  "description": "Local-first file encryption, decryption, and code obfuscation toolkit running entirely in the browser.",
+  "private": true,
+  "scripts": {
+    "start": "http-server . -p 8080 -c-1",
+    "serve": "http-server . -p 8080 -c-1"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "license": "MIT"
+}
